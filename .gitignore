@@ -1,0 +1,20 @@
+node_modules/
+.venv/
+__pycache__/
+*.local
+
+# Your own scores, recordings and results in the project root (examples/ is tracked)
+/*.mxl
+/*.musicxml
+/*.webm
+/*.mp3
+/*.m4a
+/*.opus
+/*.wav
+/*.kplayer
+/*.kplayer.json
+/*.voicing.json
+/analysis/
+
+# Scores and other reference PDFs (e.g. full scores from IMSLP)
+*.pdf
