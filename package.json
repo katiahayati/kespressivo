@@ -13,6 +13,7 @@
     "check-voice": "tsx scripts/check-voice.ts",
     "fit-dynamics": "tsx scripts/fit-dynamics.ts",
     "voice-balance": "tsx scripts/voice-balance.ts",
+    "melody-presence": "tsx scripts/melody-presence.ts",
     "render-audio": "tsx scripts/render-audio.ts"
   },
   "dependencies": {

@@ -108,9 +108,18 @@ rules that only happen to work here.
      both the top and the bottom.
    - Keep a rule out of other passages with `minPitch`, note length or a bar range. A short-note rule caught
      the left hand's chords in bars 21 and 23 until `minPitch` kept it in the treble.
+   - **Mind the velocities, not just the dB.** A reduction of an orchestral song is often marked pp throughout
+     (pp is velocity 32). Take 7–11 dB off a strand there and it plays at velocity 13–25, which the sampled piano
+     barely sounds: only the downbeats come through. Keep accompaniment strands at about −7 or above in pp
+     passages, and lift a learned shape (learn-dynamics, `--lift`) if the levels sit around pp.
+   - A tune of **long held notes** fades under figuration struck after it. Select those notes too (Apollo:
+     `minLength: 1.5`, `top: true` in the right hand, without `repeated: false`, so a repeated held note
+     counts) and give them the tune's level.
    - **Pedal** with `harmony` and `every` set to the real beat (3 in 6/4; usually 1 in 4/4, 2 in alla breve).
      Compared quarter by quarter, a bass played every other eighth reads as a new harmony on each beat, so the
-     pedal changed on beats 3 and 6 where the print never does. Put `off` spans where the print is dry.
+     pedal changed on beats 3 and 6 where the print never does. In Apollo the cellos' sextuplets passed
+     through C, D, F and G♯ over an E♭ chord, and the pedal changed on every beat; compared every half bar
+     (`every: 2`) it changes at most once inside a bar. Put `off` spans where the print is dry.
 
 5. **Check it.**
    - `npx tsx $E/check_voicing.mts score.mxl voicing.json [BAR…]` lists the problems first: anchors outside
@@ -124,6 +133,13 @@ rules that only happen to work here.
      - clipping.
    - With the tune inside the piano (a reduction), run `scripts/voice-balance.ts` (README). It renders and
      measures whether the melody is on top: aim for most bars, by 3–6 dB.
+   - Then `scripts/melody-presence.ts`: whether the tune is **heard through each bar**, not only at its
+     attacks, and whether the downbeat carries the bar. Voice-balance only compares the beats where each voice
+     strikes, so a tune of long held notes over repeated chords passes it and still sounds sparse: each held
+     note fades under the chords struck after it. Apollo's first voicing passed voice-balance in 94 of 105 bars,
+     yet the user heard "mostly the big beats, very sparse". Its tune was heard in 55% of eighths; bringing the
+     held notes in and up (+8), lightening the downbeat's bass and held chords, and raising the repeated chords
+     a little made it 65%.
    - With a recording, the learn-dynamics skill compares bass-to-treble balance.
 
 6. **Deliver.**

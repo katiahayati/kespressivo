@@ -77,8 +77,13 @@ every half bar until they match, keeping your voicing's balance on top.
 .venv/bin/python tools/dynamics_arc.py /tmp/alignment.json /tmp/sep/htdemucs/music/no_vocals.wav START /tmp/arc.json
 npm run fit-dynamics -- song.mxl song.performer.kplayer.json /tmp/arc.json voicing.json song.performer-dynamics.kplayer.json --part 1
 npm run voice-balance -- song.mxl song.performer-dynamics.kplayer.json   # is the melody on top, bar by bar?
+npm run melody-presence -- song.mxl song.performer-dynamics.kplayer.json   # is it heard through the bar, or only at its attacks?
 npm run render-audio -- song.mxl song.performer-dynamics.kplayer.json out.wav --hall   # listen outside the browser
 ```
+
+The fitted shape is centred on the written dynamics' typical loudness. A reduction marked mostly pp leaves a voiced
+accompaniment at velocities the piano barely sounds; `--lift 4` centres it 4 dB higher. A recording with a wider range
+than the piano's velocities (Lott's 30 dB) pins its climaxes at the top; `--range 0.85` scales its shape to fit.
 
 `render-audio` plays a performance as kplayer does: the same synth and piano, and with `--hall` the same concert
 hall. Leave the hall out when measuring loudness.

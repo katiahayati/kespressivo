@@ -38,13 +38,20 @@ function filter(x: Float32Array, { b, a }: { b: number[]; a: number[] }): Float3
   return y;
 }
 
-/** Mean K-weighted power in 400 ms windows every 50 ms, of the mono mix; with each window's centre time. */
-export function momentaryPower(left: Float32Array, right: Float32Array, rate: number): { times: Float64Array; power: Float64Array } {
+/** Running sum of the K-weighted power of the mono mix: the power between samples a and b is (cum[b] − cum[a]) / (b − a). */
+export function weightedPowerSum(left: Float32Array, right: Float32Array, rate: number): Float64Array {
   const mono = new Float32Array(left.length);
   for (let i = 0; i < mono.length; i++) mono[i] = (left[i] + right[i]) / 2;
   const weighted = filter(filter(mono, biquad('high_shelf', 4, Math.SQRT1_2, 1500, rate)), biquad('high_pass', 0, 0.5, 38, rate));
   const cum = new Float64Array(weighted.length + 1);
   for (let i = 0; i < weighted.length; i++) cum[i + 1] = cum[i] + weighted[i] * weighted[i];
+  return cum;
+}
+
+/** Mean K-weighted power in 400 ms windows every 50 ms, of the mono mix; with each window's centre time. */
+export function momentaryPower(left: Float32Array, right: Float32Array, rate: number): { times: Float64Array; power: Float64Array } {
+  const cum = weightedPowerSum(left, right, rate);
+  const weighted = { length: cum.length - 1 };
   const win = Math.round(WINDOW * rate);
   const hop = Math.round(HOP * rate);
   const n = Math.max(0, Math.floor((weighted.length - win) / hop) + 1);

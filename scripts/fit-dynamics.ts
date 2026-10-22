@@ -5,8 +5,10 @@
 // (relative to each one's median), keeping the voicing's balance on top.
 //
 // Usage: npx tsx scripts/fit-dynamics.ts score.mxl performance.kplayer.json arc.json voicing.json out.kplayer.json
-//          [--part 1] [--every 2] [--range 1] [--smooth 2] [--iterations 4] [--source "Thielemann"]
+//          [--part 1] [--every 2] [--range 1] [--lift 0] [--smooth 2] [--iterations 4] [--source "Thielemann"]
 //
+// The shape is centred on the written dynamics' typical loudness; --lift raises (or lowers) that centre by so many dB,
+// for a reduction marked mostly pp where the voiced accompaniment would barely sound.
 // arc.json is tools/dynamics_arc.py's measurement of the recording (the accompaniment's stem for a song).
 // The output is the performance file with these dynamics; Import voicing in the app takes just them.
 
@@ -30,6 +32,7 @@ const opt = (name: string, def: string) => {
 const partIndex = Number(opt('part', '1'));
 const every = Number(opt('every', '2'));
 const range = Number(opt('range', '1'));
+const lift = Number(opt('lift', '0'));
 const smooth = Number(opt('smooth', '2'));
 const iterations = Number(opt('iterations', '4'));
 const source = opt('source', '');
@@ -86,12 +89,12 @@ const recSmooth = new Map(
 const written = await measure({ ...voicing, written: true });
 const writtenMedian = median(beats.filter((q) => written.has(q)).map((q) => written.get(q)!));
 const recMedian = median(beats.map((q) => recSmooth.get(q)!));
-const target = new Map(beats.map((q) => [q, writtenMedian + range * (recSmooth.get(q)! - recMedian)]));
+const target = new Map(beats.map((q) => [q, writtenMedian + lift + range * (recSmooth.get(q)! - recMedian)]));
 
-// Level points, starting from the written levels.
+// Level points, starting from the written levels (lifted: a level's dB in the voicing is about a dB of loudness).
 const writtenLevel = partLevels(input({ ...voicing, written: true })).get(partIndex)!;
 const points: { q: number; level: number }[] = [];
-for (let q = 0; q < score.index.endQ - 1e-6; q += every) points.push({ q, level: writtenLevel(q) });
+for (let q = 0; q < score.index.endQ - 1e-6; q += every) points.push({ q, level: Math.min(MAX_LEVEL, writtenLevel(q) * 10 ** (lift / 40)) });
 
 const shapeDoc = (): DynamicsDoc => {
   const at = (q: number) => anchorAtQ(score.index, q)!;

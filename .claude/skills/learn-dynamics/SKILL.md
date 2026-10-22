@@ -42,6 +42,11 @@ The user is a singer and musician. Talk in bars, beats and dB, and compare with 
    - After fitting, expect about 1–2 dB.
    - Recordings' ranges differ a lot: Thielemann 19 dB, Lott 30 dB, Forsberg about 35 dB (2nd–98th
      percentile).
+   - The shape is centred on the written dynamics' typical level. Apollo's reduction is marked mostly pp, so
+     the first fits sat around velocity 35, and a voiced accompaniment under that (velocity 13–25) barely
+     sounded. `--lift 4` centres it 4 dB higher (Apollo: median velocity 35 → 46).
+   - A lift pushes a wide recording's climaxes into the ceiling (velocity 120): Lott's went from 8 pinned
+     level points to 27. `--range 0.85` scales the shape to fit (19 pinned, 2.3 dB rms).
 
 3. **Read the result against the score:**
    `npx tsx $L/compare_levels.mts score.mxl voicing.json analysis/X/dyn.kplayer.json …` shows each file's
