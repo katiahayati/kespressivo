@@ -38,6 +38,15 @@ function filter(x: Float32Array, { b, a }: { b: number[]; a: number[] }): Float3
   return y;
 }
 
+/**
+ * Audio through a small loudspeaker, roughly: a fourth-order high-pass at `hz` (a phone's speaker gives little
+ * below about 300 Hz), to see what of a piano part is left on one.
+ */
+export function smallSpeaker(x: Float32Array, rate: number, hz = 300): Float32Array {
+  const hp = biquad('high_pass', 0, Math.SQRT1_2, hz, rate);
+  return filter(filter(x, hp), hp);
+}
+
 /** Running sum of the K-weighted power of the mono mix: the power between samples a and b is (cum[b] − cum[a]) / (b − a). */
 export function weightedPowerSum(left: Float32Array, right: Float32Array, rate: number): Float64Array {
   const mono = new Float32Array(left.length);

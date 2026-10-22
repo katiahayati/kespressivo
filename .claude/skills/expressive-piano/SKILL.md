@@ -140,6 +140,14 @@ rules that only happen to work here.
      yet the user heard "mostly the big beats, very sparse". Its tune was heard in 55% of eighths; bringing the
      held notes in and up (+8), lightening the downbeat's bass and held chords, and raising the repeated chords
      a little made it 65%.
+   - The same script prints how far the tune stands **over the rest** (the whole accompaniment, summed), and
+     `--phone` measures it through a small speaker (little below 300 Hz), which takes the bass and the tenor
+     figuration away first. The user listens on a phone as well as a computer. In Apollo the window was narrow:
+     at 2.3 dB under the rest (full range) the user missed the tune; at 1.2 dB over, with the tune at +8 and the
+     accompaniment at −6 to −7, they "heard little of the rest". The settled voicing has the tune at +8, the
+     held chords, repeated chords and bass at −3 to −4, the cellos' figure at −6: 0.5–1.8 dB under the rest at
+     full range, 1–2 dB over on a phone. Tell the user each strand has its own Level slider in the Dynamics
+     panel, and ask for the settings they end up liking.
    - With a recording, the learn-dynamics skill compares bass-to-treble balance.
 
 6. **Deliver.**

@@ -5,14 +5,17 @@
 // measures the loudness of every half beat (eighth note).
 //
 // Usage: npx tsx scripts/melody-presence.ts score.mxl performance.kplayer.json [--voicing file.json] [--part 1]
-//          [--lead melody,clarinet16] [--bars 1-20] [--quiet]
+//          [--lead melody,clarinet16] [--bars 1-20] [--phone] [--quiet]
 //
 // For each bar:
 //   tune      how far the leading voices sit below the whole part, median over the bar's eighths (0 dB: the tune
 //             is all you hear; −10 dB: it has faded into the accompaniment or isn't playing)
 //   heard     how many of the bar's eighths have the tune within 6 dB of the whole part
+//   over rest how far the tune stands above everything else (the accompaniment), median over the eighths where
+//             both sound: a voiced melody stands a few dB over; 12 dB or more leaves the rest barely heard
 //   downbeat  how much louder the first eighth is than the rest of the bar (a bar carried by its downbeat)
 //   gaps      eighths more than 12 dB below the bar's loudest: near silence between the attacks
+// --phone measures it as a phone's speaker plays it (little below 300 Hz).
 // --voicing takes its voices (and lead) in place of the performance's, keeping the performance's dynamic shape.
 
 import fs from 'node:fs';
@@ -24,7 +27,7 @@ import { buildTimeMap } from 'kplayer/src/perf/timeline';
 import type { DynamicsDoc } from 'kplayer/src/perf/types';
 import { parseDoc } from 'kplayer/src/storage/persist';
 import { loadScoreFile } from './lib/load-score';
-import { lufs, weightedPowerSum } from './lib/loudness';
+import { lufs, smallSpeaker, weightedPowerSum } from './lib/loudness';
 import { createRenderer } from './lib/render';
 
 const args = process.argv.slice(2);
@@ -33,6 +36,7 @@ const opt = (name: string) => {
   return i < 0 ? undefined : args.splice(i, 2)[1];
 };
 const quiet = args.includes('--quiet') ? (args.splice(args.indexOf('--quiet'), 1), true) : false;
+const phone = args.includes('--phone') ? (args.splice(args.indexOf('--phone'), 1), true) : false;
 const voicingFile = opt('voicing');
 const partIndex = Number(opt('part') ?? 1);
 const leadOpt = opt('lead');
@@ -64,10 +68,13 @@ const renderer = createRenderer(32000, { pianoOnly: part.program < 8 });
 const render = async (notes: typeof part.notes) => {
   const midi = renderPerformanceMidi({ ...shaped, parts: [{ ...part, notes }] }, map, { parts: doc.parts });
   const { left, right } = await renderer.render(midi, map.duration + 2);
-  return weightedPowerSum(left, right, renderer.rate);
+  return phone
+    ? weightedPowerSum(smallSpeaker(left, renderer.rate), smallSpeaker(right, renderer.rate), renderer.rate)
+    : weightedPowerSum(left, right, renderer.rate);
 };
 const all = await render(part.notes);
 const tune = await render(part.notes.filter((n) => leads.has(n.voice ?? '')));
+const rest = await render(part.notes.filter((n) => !leads.has(n.voice ?? '')));
 const slot = (cum: Float64Array, q0: number, q1: number) => {
   const a = Math.round(map.T(q0) * renderer.rate);
   const b = Math.max(a + 1, Math.round(map.T(q1) * renderer.rate));
@@ -76,7 +83,7 @@ const slot = (cum: Float64Array, q0: number, q1: number) => {
 
 const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[xs.length >> 1];
 const energyMean = (xs: number[]) => 10 * Math.log10(xs.reduce((s, x) => s + 10 ** (x / 10), 0) / xs.length);
-const rows: { label: string; tune: number; heard: number; slots: number; downbeat: number; gaps: number; level: number }[] = [];
+const rows: { label: string; tune: number; heard: number; slots: number; overRest?: number; downbeat: number; gaps: number; level: number }[] = [];
 for (const m of score.index.played) {
   const label = score.index.measures[m.measureIndex].label;
   if (Number(label) < firstBar || Number(label) > lastBar) continue;
@@ -84,6 +91,9 @@ for (const m of score.index.played) {
   for (let q = m.q0; q < m.q1 - 1e-6; q += 0.5) qs.push(q);
   const mix = qs.map((q) => slot(all, q, Math.min(q + 0.5, m.q1)));
   const mel = qs.map((q) => slot(tune, q, Math.min(q + 0.5, m.q1)));
+  const acc = qs.map((q) => slot(rest, q, Math.min(q + 0.5, m.q1)));
+  // Where both sound (neither has faded 30 dB under the bar's loudest).
+  const both = qs.map((_, i) => i).filter((i) => mel[i] > Math.max(...mix) - 30 && acc[i] > Math.max(...mix) - 30);
   const loudest = Math.max(...mix);
   if (loudest < -70) continue;
   const presence = mel.map((l, i) => l - mix[i]);
@@ -92,6 +102,7 @@ for (const m of score.index.played) {
     tune: median(presence),
     heard: presence.filter((p) => p >= -6).length,
     slots: qs.length,
+    overRest: both.length ? median(both.map((i) => mel[i] - acc[i])) : undefined,
     downbeat: qs.length > 1 ? mix[0] - energyMean(mix.slice(1)) : 0,
     gaps: mix.filter((l) => l < loudest - 12).length,
     level: energyMean(mix),
@@ -99,12 +110,16 @@ for (const m of score.index.played) {
 }
 const fmt = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(1)}`;
 if (!quiet) {
-  console.log(`bar   tune dB  heard   downbeat dB  gaps   loudness (LUFS)   leading voices: ${[...leads].join(', ')}`);
-  for (const r of rows) console.log(`${r.label.padStart(3)}   ${fmt(r.tune).padStart(6)}   ${`${r.heard}/${r.slots}`.padStart(5)}   ${fmt(r.downbeat).padStart(8)}     ${String(r.gaps).padStart(2)}    ${r.level.toFixed(1)}`);
+  console.log(`bar   tune dB  heard  over rest   downbeat dB  gaps   loudness (LUFS)   leading voices: ${[...leads].join(', ')}`);
+  for (const r of rows)
+    console.log(
+      `${r.label.padStart(3)}   ${fmt(r.tune).padStart(6)}   ${`${r.heard}/${r.slots}`.padStart(5)}   ${(r.overRest === undefined ? '' : fmt(r.overRest)).padStart(7)}    ${fmt(r.downbeat).padStart(8)}     ${String(r.gaps).padStart(2)}    ${r.level.toFixed(1)}`,
+    );
 }
 const heard = rows.reduce((s, r) => s + r.heard, 0) / rows.reduce((s, r) => s + r.slots, 0);
 console.log(
-  `${rows.length} bars: tune heard in ${Math.round(heard * 100)}% of eighths, median ${fmt(median(rows.map((r) => r.tune)))} dB under the whole part; ` +
+  `${rows.length} bars: tune heard in ${Math.round(heard * 100)}% of eighths, median ${fmt(median(rows.map((r) => r.tune)))} dB under the whole part, ` +
+    `${fmt(median(rows.flatMap((r) => (r.overRest === undefined ? [] : [r.overRest]))))} dB over the rest; ` +
     `downbeat ${fmt(median(rows.map((r) => r.downbeat)))} dB over the rest of the bar; ` +
     `${(rows.reduce((s, r) => s + r.gaps, 0) / rows.length).toFixed(1)} gaps a bar; loudness median ${median(rows.map((r) => r.level)).toFixed(1)} LUFS`,
 );
