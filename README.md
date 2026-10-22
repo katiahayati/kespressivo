@@ -13,7 +13,8 @@ Most of the work is done with Claude Code and the three skills in `.claude/skill
 | `learn-dynamics` | Fits a recording's dynamic shape beat by beat, the pianist's pulse, and the bass/treble balance |
 | `expressive-piano` | Writes a voicing from the score and its printed edition: which strands lead, a pulse on the bar's real beats, the composer's dynamics and hairpins, and pedal |
 
-The commands they use are below, for running by hand.
+[`PROMPTS.md`](PROMPTS.md) has the requests that made the voicings here, and what came of each. The commands the
+skills use are below, for running by hand.
 
 ## Setup
 
