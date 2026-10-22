@@ -20,10 +20,10 @@ Claude asked which instrument each strand of the reduction stands for:
 
 > Go ahead and give it your best shot. You don't need my approval along the way; tell me if you need help.
 
-What came of it: `apollo-learning.voicing.json`, with each strand named after what the orchestra plays. The muted
-cellos' sextuplets and the timpani rolls become a soft blanket, the strings' repeated chords stay back, the top line
-of the right hand (the brass fanfares, the solo violin, the clarinet) comes forward and sounds slightly ahead, and the
-pedal changes with the harmony. The same session fitted each recording's dynamic shape on top: the `-dynamics` files.
+What came of it: a first voicing, with each strand named after what the orchestra plays. The muted cellos'
+sextuplets and the timpani rolls become a soft blanket, the strings' repeated chords stay back, the top line of the
+right hand (the brass fanfares, the solo violin, the clarinet) comes forward and sounds slightly ahead, and the pedal
+changes with the harmony. The same session fitted each recording's dynamic shape on top.
 
 ## Name the beat the music moves in
 
@@ -55,7 +55,7 @@ not only at its attacks.
 
 What came of it: the held chords, the strings' pulse and the bass brought back up, with the cellos' figure still
 the softest strand. `melody-presence` now measures the tune against the rest of the texture as well, both at full
-range and through a phone's small speaker.
+range and through a phone's small speaker. This is the voicing in [`examples/apollo`](examples/apollo).
 
 ## Tips
 

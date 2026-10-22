@@ -89,10 +89,11 @@ rules that only happen to work here.
 
    | Strand | Var det en dröm | Apollo (reduction) |
    |---|---|---|
-   | Running sixteenths under a singer | −4, vary 1 | sextuplet blanket −10 |
-   | Held inner line (double-stemmed) | −1 | held chords −5 |
-   | Left hand overall | −4.5 | bass −4 |
-   | Repeated-chord pulse | | −11 |
+   | Running sixteenths under a singer | −4, vary 1 | sextuplet blanket −6 (−8 where pp) |
+   | Held inner line (double-stemmed) | −1 | held chords −4 |
+   | Left hand overall | −4.5 | bass −3 |
+   | Repeated-chord pulse | | −4 |
+   | The tune in the right hand, held notes too, ahead | | +8 |
    | Bass on each group's first note (pulse, every 1.5) | +2 | |
    | Bass on the big beats (pulse, every 3) | +3 more | |
    | Right hand at beat 4 (pulse, `beats: [1]`, fade 0.5) | +1.5 | |

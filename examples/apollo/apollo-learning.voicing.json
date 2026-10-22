@@ -1,5 +1,5 @@
 {
- "about": "Voicing for Gesang der Apollopriesterin (piano reduction), from Strauss's full score: the strings' repeated-chord pulse kept back; the muted cellos' figure (bars 1-26, 40-42) and the timpani rolls (78, 88-99) as a soft blanket; the string tremolo at the climaxes (56-70, 107-113) left full; the top moving line of the right hand (brass fanfares, solo violin, clarinet, cellos' line) brought out and slightly ahead; pedal changed with the harmony. Use Import voicing… in the Dynamics panel.",
+ "about": "Voicing for Gesang der Apollopriesterin (piano reduction), from Strauss's full score: the tune (the top line of the right hand: brass fanfares, solo violin, clarinet, the cellos' line, including its long held notes) 8 dB over the marks and slightly ahead; the held chords, the strings' repeated-chord pulse and the bass 3-4 dB under, present under the tune; the muted cellos' figure (bars 1-26, 40-42) a little softer still, and the timpani rolls (78, 88-99) and the climaxes' string tremolo softer again; pedal changed with the harmony, compared every half bar. Use Import voicing… in the Dynamics panel.",
  "dynamics": {
   "leadMs": 20,
   "voices": [
@@ -10,7 +10,7 @@
      "part": 1,
      "minLength": 0.2
     },
-    "gainDb": -5
+    "gainDb": -4
    },
    {
     "id": "pulse",
@@ -20,7 +20,7 @@
      "repeated": true,
      "maxLength": 1
     },
-    "gainDb": -11,
+    "gainDb": -4,
     "varyDb": 1.5
    },
    {
@@ -42,7 +42,7 @@
      "tremolo": false,
      "repeated": false
     },
-    "gainDb": -7,
+    "gainDb": -6,
     "varyDb": 1.5,
     "jitterMs": 4
    },
@@ -65,7 +65,7 @@
      "tremolo": false,
      "repeated": false
     },
-    "gainDb": -9,
+    "gainDb": -8,
     "varyDb": 1.5,
     "jitterMs": 4
    },
@@ -89,7 +89,7 @@
      ],
      "maxLength": 0.13
     },
-    "gainDb": -12,
+    "gainDb": -10,
     "varyDb": 2,
     "jitterMs": 6
    },
@@ -110,7 +110,7 @@
      "part": 1,
      "maxLength": 0.13
     },
-    "gainDb": -12,
+    "gainDb": -9,
     "varyDb": 1.5,
     "jitterMs": 4
    },
@@ -131,7 +131,7 @@
      "part": 1,
      "maxLength": 0.13
     },
-    "gainDb": -12,
+    "gainDb": -9,
     "varyDb": 1.5,
     "jitterMs": 4
    },
@@ -147,7 +147,7 @@
      "minLength": 0.7,
      "bottom": true
     },
-    "gainDb": -4
+    "gainDb": -3
    },
    {
     "id": "melody",
@@ -162,7 +162,22 @@
      "tremolo": false,
      "top": true
     },
-    "gainDb": 4,
+    "gainDb": 8,
+    "lead": true
+   },
+   {
+    "id": "tune-held",
+    "name": "Melody, held notes (top of the right hand)",
+    "select": {
+     "part": 1,
+     "staff": [
+      1
+     ],
+     "minLength": 1.5,
+     "top": true,
+     "tremolo": false
+    },
+    "gainDb": 8,
     "lead": true
    },
    {
@@ -190,7 +205,7 @@
      "minLength": 0.2,
      "top": true
     },
-    "gainDb": 4,
+    "gainDb": 8,
     "lead": true
    },
    {
@@ -215,7 +230,7 @@
       1
      ]
     },
-    "gainDb": -4
+    "gainDb": -2
    },
    {
     "id": "cellos7",
@@ -240,7 +255,7 @@
      ],
      "maxLength": 0.9
     },
-    "gainDb": -7,
+    "gainDb": -6,
     "varyDb": 1.5,
     "jitterMs": 4
    },
@@ -268,7 +283,7 @@
      "maxLength": 0.9,
      "repeated": false
     },
-    "gainDb": -7,
+    "gainDb": -6,
     "varyDb": 1.5,
     "jitterMs": 4
    },
@@ -294,7 +309,7 @@
       2
      ]
     },
-    "gainDb": 4,
+    "gainDb": 8,
     "lead": true
    }
   ],
@@ -312,7 +327,8 @@
      "label": "113"
     },
     "mode": "harmony",
-    "part": 1
+    "part": 1,
+    "every": 2
    }
   ]
  }

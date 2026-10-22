@@ -37,16 +37,23 @@ Verovio plays every note at one level, so a reduction's pianissimo tremolo comes
 voicing gives each strand of the texture its own level, named after what the orchestra plays (from the full score
 on [IMSLP](https://imslp.org/wiki/4_Gesänge,_Op.33_(Strauss,_Richard))):
 
-- the strings' pulse of repeated chords, kept back;
-- the muted cellos' sextuplet figure (bars 1–26, 40–42) and the timpani rolls (bars 78, 88–99), a soft blanket;
-- the string section's tremolo at the climaxes (bars 64–69, 107–112), present but under the tune;
-- the top moving line of the right hand (the brass fanfares, the solo violin, the clarinet, the cellos' line),
-  brought out and sounding slightly ahead;
+- the tune: the top line of the right hand (the brass fanfares, the solo violin, the clarinet, the cellos' line),
+  its long held notes included, 8 dB over the marks and sounding slightly ahead;
+- the held chords, the strings' pulse of repeated chords and the bass, 3–4 dB under the marks: present, under the
+  tune;
+- the muted cellos' sextuplet figure (bars 1–26, 40–42) a little softer still, and the timpani rolls (bars 78,
+  88–99) softer again: a soft blanket;
+- the string section's tremolo at the climaxes (bars 64–69, 107–112), under the tune;
 - a few bars where the reduction moves a line to the other hand (the trombones in bar 7, for example).
 
-Pedal changes with the harmony. Rendered and measured, the melody comes out on top in 94 of 105 bars, by a median
-of about 4 dB. The `-dynamics` files add each conductor's dynamic shape, fitted to the recording's loudness beat by
-beat (within about 2 dB).
+Pedal changes with the harmony, compared every half bar, so the cellos' passing notes don't change it on every beat.
+The `-dynamics` files add each recording's dynamic shape, fitted to its loudness beat by beat (within about 2 dB) and
+centred 4 dB above the reduction's mostly-pp marks, so the piano sounds the accompaniment; Lott's 30 dB range is
+scaled to 85% so her climaxes fit. Measured with `melody-presence`, the tune is heard in 55–59% of the eighths and
+sits 0.5–1.8 dB under the rest of the texture at full range, 1–2 dB over it through a phone's speaker.
+
+An earlier voicing kept the accompaniment 7–12 dB under the marks. It measured well (the tune on top in 94 of 105
+bars) but sounded sparse: mostly the big beats. [`PROMPTS.md`](../../PROMPTS.md) has how it got from there to here.
 
 ## How they were made
 
